@@ -4,7 +4,7 @@ defmodule TimeManagerWeb.UserController do
   alias TimeManager.Accounts
   alias TimeManager.Accounts.User
 
-  action_fallback TimeManagerWeb.FallbackController
+  action_fallback(TimeManagerWeb.FallbackController)
 
   def index(conn, _params) do
     users = Accounts.list_users()
@@ -41,17 +41,26 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
+  # def showByEmailAndUsername(conn, %{"username" => username, "email" => email}) do
+  #   users = Accounts.list_users()
+  #   user =
+  #     Enum.find(users, fn u ->
+  #       u.username == username && u.email == email
+  #     end)
+  #   case user do
+  #     nil ->
+  #       send_resp(conn, 200, "Not found") # Sending an empty map as the response
+  #     _ ->
+  #       render(conn, :show, user: user)
+  #   end
+  # end
+
   def showByEmailAndUsername(conn, %{"username" => username, "email" => email}) do
-    users = Accounts.list_users()
-    user =
-      Enum.find(users, fn u ->
-        u.username == username && u.email == email
-      end)
-    case user do
-      nil ->
-        send_resp(conn, 200, "Not found") # Sending an empty map as the response
-      _ ->
-        render(conn, :show, user: user)
+    case Accounts.get_user_by_email_and_username(email, username) do
+      {:ok, users} ->
+        render(conn, :index, users: users)
+      {:error, reason} ->
+        json(conn, %{error: reason})
     end
   end
 end
