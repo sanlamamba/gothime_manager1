@@ -13,8 +13,8 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> list_teams()
-      [%Team{}, ...]
+  		iex> list_teams()
+  		[%Team{}, ...]
 
   """
   def list_teams do
@@ -28,11 +28,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> get_team!(123)
-      %Team{}
+  		iex> get_team!(123)
+  		%Team{}
 
-      iex> get_team!(456)
-      ** (Ecto.NoResultsError)
+  		iex> get_team!(456)
+  		** (Ecto.NoResultsError)
 
   """
   def get_team!(id), do: Repo.get!(Team, id)
@@ -42,11 +42,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> create_team(%{field: value})
-      {:ok, %Team{}}
+  		iex> create_team(%{field: value})
+  		{:ok, %Team{}}
 
-      iex> create_team(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  		iex> create_team(%{field: bad_value})
+  		{:error, %Ecto.Changeset{}}
 
   """
   def create_team(attrs \\ %{}) do
@@ -60,11 +60,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> update_team(team, %{field: new_value})
-      {:ok, %Team{}}
+  		iex> update_team(team, %{field: new_value})
+  		{:ok, %Team{}}
 
-      iex> update_team(team, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  		iex> update_team(team, %{field: bad_value})
+  		{:error, %Ecto.Changeset{}}
 
   """
   def update_team(%Team{} = team, attrs) do
@@ -78,11 +78,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> delete_team(team)
-      {:ok, %Team{}}
+  		iex> delete_team(team)
+  		{:ok, %Team{}}
 
-      iex> delete_team(team)
-      {:error, %Ecto.Changeset{}}
+  		iex> delete_team(team)
+  		{:error, %Ecto.Changeset{}}
 
   """
   def delete_team(%Team{} = team) do
@@ -94,8 +94,8 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> change_team(team)
-      %Ecto.Changeset{data: %Team{}}
+  		iex> change_team(team)
+  		%Ecto.Changeset{data: %Team{}}
 
   """
   def change_team(%Team{} = team, attrs \\ %{}) do
@@ -109,8 +109,8 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> list_users()
-      [%User{}, ...]
+  		iex> list_users()
+  		[%User{}, ...]
 
   """
   def list_users do
@@ -124,11 +124,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> get_user!(123)
-      %User{}
+  		iex> get_user!(123)
+  		%User{}
 
-      iex> get_user!(456)
-      ** (Ecto.NoResultsError)
+  		iex> get_user!(456)
+  		** (Ecto.NoResultsError)
 
   """
   def get_user!(id), do: Repo.get!(User, id)
@@ -138,11 +138,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> create_user(%{field: value})
-      {:ok, %User{}}
+  		iex> create_user(%{field: value})
+  		{:ok, %User{}}
 
-      iex> create_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  		iex> create_user(%{field: bad_value})
+  		{:error, %Ecto.Changeset{}}
 
   """
   def create_user(attrs \\ %{}) do
@@ -156,11 +156,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> update_user(user, %{field: new_value})
-      {:ok, %User{}}
+  		iex> update_user(user, %{field: new_value})
+  		{:ok, %User{}}
 
-      iex> update_user(user, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+  		iex> update_user(user, %{field: bad_value})
+  		{:error, %Ecto.Changeset{}}
 
   """
   def update_user(%User{} = user, attrs) do
@@ -174,11 +174,11 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> delete_user(user)
-      {:ok, %User{}}
+  		iex> delete_user(user)
+  		{:ok, %User{}}
 
-      iex> delete_user(user)
-      {:error, %Ecto.Changeset{}}
+  		iex> delete_user(user)
+  		{:error, %Ecto.Changeset{}}
 
   """
   def delete_user(%User{} = user) do
@@ -190,12 +190,25 @@ defmodule TimeManager.Accounts do
 
   ## Examples
 
-      iex> change_user(user)
-      %Ecto.Changeset{data: %User{}}
+  		iex> change_user(user)
+  		%Ecto.Changeset{data: %User{}}
 
   """
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
+  end
+
+  # CUSTOM
+  def get_user_by_email_and_username(email, username) do
+    query =
+      from(u in User,
+        where: u.email == ^email and u.username == ^username
+      )
+
+    case Repo.all(query) do
+      [] -> {:error, "No User found with this email and username"}
+      users -> {:ok, users}
+    end
   end
 
   def mark_as_visible(user) do
