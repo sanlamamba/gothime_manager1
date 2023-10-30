@@ -197,4 +197,10 @@ defmodule TimeManager.Accounts do
   def change_user(%User{} = user, attrs \\ %{}) do
     User.changeset(user, attrs)
   end
+
+  def mark_as_visible(user) do
+    user
+    |> User.changeset(%{is_visible: true})
+    |> Repo.update()
+  end
 end

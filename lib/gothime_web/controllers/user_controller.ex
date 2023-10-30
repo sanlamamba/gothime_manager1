@@ -40,4 +40,18 @@ defmodule TimeManagerWeb.UserController do
       send_resp(conn, :no_content, "")
     end
   end
+
+  def showByEmailAndUsername(conn, %{"username" => username, "email" => email}) do
+    users = Accounts.list_users()
+    user =
+      Enum.find(users, fn u ->
+        u.username == username && u.email == email
+      end)
+    case user do
+      nil ->
+        send_resp(conn, 200, "Not found") # Sending an empty map as the response
+      _ ->
+        render(conn, :show, user: user)
+    end
+  end
 end

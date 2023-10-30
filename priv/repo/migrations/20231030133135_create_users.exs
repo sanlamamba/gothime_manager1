@@ -6,7 +6,7 @@ defmodule TimeManager.Repo.Migrations.CreateUsers do
       add :username, :string
       add :email, :string
       add :is_visible, :boolean, default: false, null: false
-      add :team_id, references(:teams, on_delete: :nothing)
+      add :team_id, references(:teams, on_delete: :nothing), null: false
 
       timestamps(type: :utc_datetime)
     end
