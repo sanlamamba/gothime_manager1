@@ -4,7 +4,7 @@ defmodule TimeManagerWeb.ClockController do
   alias TimeManager.Time
   alias TimeManager.Time.Clock
 
-  action_fallback TimeManagerWeb.FallbackController
+  action_fallback(TimeManagerWeb.FallbackController)
 
   def index(conn, _params) do
     clocks = Time.list_clocks()
@@ -41,16 +41,15 @@ defmodule TimeManagerWeb.ClockController do
     end
   end
 
-  def createwithuser(conn, %{"clock" => clock_params, "user_id" => user_id}) do
-    with {:ok, %Clock{} = clock} <- Time.create_clock(Map.put(clock_params, "user_id", user_id)) do
+  def create_with_user(conn, %{"clock" => clock_params, "user_id" => user_id}) do
+    combined_params = Map.merge(clock_params, %{"user_id" => user_id})
+    with {:ok, %Clock{} = clock} <- Time.create_clock(combined_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/clocks/#{clock.id}")
+      |> put_resp_header("location", ~p"/api/clocks/#{user_id}")
       |> render(:show, clock: clock)
     end
   end
-
-
 
   def get_clocks_by_userid(conn, %{"user_id" => user_id}) do
     case Time.get_clocks_by_userid(user_id) do
