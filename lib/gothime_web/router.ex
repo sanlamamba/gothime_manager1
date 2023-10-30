@@ -13,6 +13,10 @@ defmodule TimeManagerWeb.Router do
 
     resources "/teams/", TeamController
 
+    post "/clockswithuser", ClockController, :createwithuser
+    get "/clocks", ClockController, :get_clocks_by_userid
+    # resources "/clocks/", ClockController, except: [:new, :edit]
+
 
   end
 end

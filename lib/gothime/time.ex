@@ -102,6 +102,19 @@ defmodule TimeManager.Time do
     Clock.changeset(clock, attrs)
   end
 
+  # CUSTOM CLOCKS
+
+  def get_clocks_by_userid(user_id) do
+    query =
+      from c in Clock,
+        where: c.user_id == ^user_id
+
+    case Repo.all(query) do
+      [] -> {:error, "No clocks found for the specified user"}
+      schedules -> {:ok, schedules}
+    end
+  end
+
   alias TimeManager.Time.Schedule
 
   @doc """
