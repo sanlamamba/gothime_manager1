@@ -210,4 +210,32 @@ defmodule TimeManager.Time do
   def change_schedule(%Schedule{} = schedule, attrs \\ %{}) do
     Schedule.changeset(schedule, attrs)
   end
+
+  # CUSTOM SCHEDULE
+  def get_schedules_by_user_and_date_range(user_id, start_time, end_time) do
+    start_datetime = NaiveDateTime.from_iso8601!(start_time <> "T00:00:00")
+    end_datetime = NaiveDateTime.from_iso8601!(end_time <> "T23:59:59")
+
+    query =
+      from s in Schedule,
+        where:
+          s.user_id == ^user_id and s.start_time >= ^start_datetime and
+            s.end_time <= ^end_datetime
+
+    case Repo.all(query) do
+      [] -> {:error, "No schedules found for the specified user and date range"}
+      schedules -> {:ok, schedules}
+    end
+  end
+
+  def get_schedule_by_userid_and_id(user_id, id) do
+    query =
+      from s in Schedule,
+        where: s.user_id == ^user_id and s.id == ^id
+
+    case Repo.all(query) do
+      [] -> {:error, "No schedules found for the specified user and schedule_id"}
+      schedules -> {:ok, schedules}
+    end
+  end
 end
