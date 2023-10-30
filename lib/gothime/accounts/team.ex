@@ -6,6 +6,8 @@ defmodule TimeManager.Accounts.Team do
     field :name, :string
     field :description, :string
 
+    has_many :users, TimeManager.Accounts.User
+
     timestamps(type: :utc_datetime)
   end
 

@@ -6,7 +6,11 @@ defmodule TimeManager.Accounts.User do
     field :username, :string
     field :email, :string
     field :is_visible, :boolean, default: false
-    field :team_id, :id
+
+    has_many :clocks, TimeManager.Time.Clock
+    has_many :schedules, TimeManager.Time.Schedule
+
+    belongs_to :team, TimeManager.Accounts.Team
 
     timestamps(type: :utc_datetime)
   end
@@ -14,7 +18,7 @@ defmodule TimeManager.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :is_visible])
+    |> cast(attrs, [:username, :email, :is_visible, :team_id])
     |> validate_required([:username, :email, :is_visible])
     |> unique_constraint(:email)
   end

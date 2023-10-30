@@ -7,5 +7,7 @@ defmodule TimeManagerWeb.Router do
 
   scope "/api", TimeManagerWeb do
     pipe_through :api
+
+     resources "/teams/", TeamController
   end
 end
