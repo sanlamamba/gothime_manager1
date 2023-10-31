@@ -5,7 +5,7 @@ defmodule TimeManager.Accounts.User do
   schema "users" do
     field :username, :string
     field :email, :string
-    field :is_visible, :boolean, default: false
+    field :is_visible, :boolean, default: true
 
     has_many :clocks, TimeManager.Time.Clock
     has_many :schedules, TimeManager.Time.Schedule

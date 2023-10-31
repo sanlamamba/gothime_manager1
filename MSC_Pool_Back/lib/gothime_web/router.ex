@@ -3,6 +3,7 @@ defmodule TimeManagerWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
+    plug CORSPlug, origin: ["http://localhost:3000/"]
   end
 
   scope "/api", TimeManagerWeb do
