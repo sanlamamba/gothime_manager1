@@ -10,6 +10,7 @@ defmodule TimeManagerWeb.Router do
     pipe_through(:api)
 
     get("/users", UserController, :showByEmailAndUsername)
+    get("/users/all", UserController, :index)
     resources("/users", UserController, except: [:new])
 
     resources("/teams/", TeamController)
