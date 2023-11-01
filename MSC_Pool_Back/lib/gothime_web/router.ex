@@ -3,13 +3,14 @@ defmodule TimeManagerWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug CORSPlug, origin: ["http://localhost:3000/"]
+    plug(CORSPlug, origin: ["http://localhost:3000/", "http://localhost:3000/users"])
   end
 
   scope "/api", TimeManagerWeb do
     pipe_through(:api)
 
     get("/users", UserController, :showByEmailAndUsername)
+    get("/users/all", UserController, :index)
     resources("/users", UserController, except: [:new])
 
     resources("/teams/", TeamController)

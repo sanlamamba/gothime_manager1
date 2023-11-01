@@ -1,17 +1,21 @@
 // Utilities
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-import axios from "axios"
-import { Vite_API_URL } from '@/services/url';
+import axios from "axios";
+import { Vite_API_URL } from "@/services/url";
 
-export const useUserStore = defineStore('user', {
+export const useUserStore = defineStore("user", {
   state: () => ({
-    users: []
+    users: [],
+    teams: [],
   }),
   getters: {
     getUsers(state) {
-      return state.users
-    }
+      return state.users;
+    },
+    getTeams(state) {
+      return state.teams;
+    },
   },
   actions: {
     setUsers(users) {
@@ -19,15 +23,25 @@ export const useUserStore = defineStore('user', {
     },
     async fetchUsers() {
       try {
-        const response = await axios.get(Vite_API_URL + 'users/')
-        this.setUsers(response.data.data);
-
-
+        const response = await axios.get(Vite_API_URL + "users/all");
+        const filteredData = response.data.data.filter((u) => u.is_visible);
+        this.setUsers(filteredData);
+      } catch (error) {
+        alert(error);
+        console.group(error);
       }
-      catch (error) {
-        alert(error)
-        console.group(error)
+    },
+    setTeams(teams) {
+      this.teams = teams;
+    },
+    async fetchTeams() {
+      try {
+        const response = await axios.get(Vite_API_URL + "teams");
+        this.setTeams(response.data.data);
+      } catch (error) {
+        alert(error);
+        console.group(error);
       }
-    }
+    },
   },
-})
+});
