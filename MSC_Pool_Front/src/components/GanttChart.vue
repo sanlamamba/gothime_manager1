@@ -1,45 +1,58 @@
 <template>
   <g-gantt-chart
-    chart-start="2021-07-12 12:00"
-    chart-end="2021-07-14 12:00"
+    chart-start="{{chartStart}}"
+    chart-end="{{chartEnd}}"
     precision="hour"
     bar-start="myBeginDate"
     bar-end="myEndDate"
   >
-    <g-gantt-row label="My row 1" :bars="row1BarList" />
-    <g-gantt-row label="My row 2" :bars="row2BarList" />
+  <g-gantt-row label="Schedules" :bars="transformedSchedules" />
   </g-gantt-chart>
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, onMounted, computed } from "vue";
 
-const row1BarList = ref([
-  {
-    myBeginDate: "2023-07-13 13:00",
-    myEndDate: "2021-07-13 19:00",
+
+
+import { useSchedulesByUserStore } from "../store/schedulesByUser";
+const msg = ref("All the Working Time");
+const formatDateToYYYYMMDD = date => date.toISOString().slice(0, 10);
+
+const start_time = "2023-10-09";
+const end_time = "2023-10-24";
+
+const chartStart = start_time + " 00:00"; // Start of the day
+const chartEnd = end_time + " 23:59"; // End of the day
+
+
+const userId = 8;
+console.log("userId:", userId);
+
+const store = useSchedulesByUserStore();
+const getSchedulesByUser = computed(() => {
+  return store.getSchedulesByUser;
+});
+
+console.log(getSchedulesByUser);
+const schedules = computed(() => {
+  return store.schedules;
+});
+
+
+const transformedSchedules = computed(() => {
+  return schedules.value.map(schedule => ({
+    myBeginDate: formatDateToYYYYMMDD(new Date(schedule.start_time)) + " 00:00",
+    myEndDate: formatDateToYYYYMMDD(new Date(schedule.end_time)) + " 23:59",
     ganttBarConfig: {
-      // each bar must have a nested ganttBarConfig object ...
-      id: "unique-id-1", // ... and a unique "id" property
-      label: "Lorem ipsum dolor"
+      id: schedule.id.toString(), // Convert id to string
+      label: `Schedule ${schedule.id}`
+      // Add any other properties or styles as needed
     }
-  }
-])
-const row2BarList = ref([
-  {
-    myBeginDate: "2021-07-13 00:00",
-    myEndDate: "2021-07-14 02:00",
-    ganttBarConfig: {
-      id: "another-unique-id-2",
-      hasHandles: true,
-      label: "Hey, look at me",
-      style: {
-        // arbitrary CSS styling for your bar
-        background: "#e09b69",
-        borderRadius: "20px",
-        color: "black"
-      }
-    }
-  }
-])
+  }));
+});
+onMounted(() => {
+  store.fetchSchedulesByUser(userId, start_time, end_time);
+});
+
 </script>

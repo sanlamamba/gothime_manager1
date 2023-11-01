@@ -1,27 +1,140 @@
 <template>
+ <v-card>
+    <v-container fluid>
+      <v-row>
+        <v-col cols="12">
+          <div class="d-flex p-2">
+          <v-autocomplete
+  v-model="selected_start_time"
+  :items="items"
+  label="Start Date"
+></v-autocomplete>
 
-  <VDatePicker v-model="date" mode="dateTime" is24hr  :initial-page="{ month: 4, year: 2019 }"
+<v-autocomplete
+  v-model="selected_end_time"
+  :items="items"
+  label="End Date"
+></v-autocomplete>
+</div>
+<v-btn @click="filterRange">Filter Range</v-btn>
+    
+       </v-col>
+      </v-row>
+    </v-container>
+
+    <v-autocomplete
+  
+  :items="userItems"
+  item-value="value"
+  item-text="text"
+  label="UserName"
+></v-autocomplete>
+
+
+  <VDatePicker v-model="date" mode="dateTime" is24hr  :initial-page="{ month: 10, year: 2023 }"
     :color="selectedColor"
-    :attributes="attrs"
+    :attributes="calendarAttributes"
     expanded
     show-weeknumbers />
+
+</v-card>
 </template>
 <script setup>
-import { ref } from 'vue';
+
+import { ref, onMounted, computed } from "vue";
+import { useSchedulesByUserStore } from "../store/schedulesByUser";
+
+
+
+ // Format date for the request 
+const formatDateToYYYYMMDD = date => date.toISOString().slice(0, 10);
+// Format date for Popover
+const formatDateToHHMM = date => `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+
+
+// Filter for date
+const start_time = ref(formatDateToYYYYMMDD(new Date("2023-01-01")));
+const end_time = ref(formatDateToYYYYMMDD(new Date("2024-12-31")));
+
+
+const selected_start_time = ref(null);
+const selected_end_time = ref(null);
+
+// user id 
+const selected_user = ref(null)
+const userId = 8;
+
+
+
+ // The store for schedules by user
+const store = useSchedulesByUserStore();
+onMounted(() => {
+  store.fetchSchedulesByUser(userId, start_time.value, end_time.value);
+  store.fetchUsers();
+});
+const getSchedulesByUser = computed(() => {
+  return store.getSchedulesByUser;
+});
+
+const getUsers = computed(() => {
+  return store.users ;
+});
+console.log(store.users + 'store ')
+const userItems = computed(() => {
+  return getUsers.value.map(user => ({
+    text: user.name,
+    value: user.id
+  }));
+});
+console.log(getUsers.value+ "empty ")
 
 
 
 
 
-// Calendar attributes
+const filterRange = () => {
+  if (selected_start_time.value && selected_end_time.value) {
+    start_time.value = selected_start_time.value;
+    end_time.value = selected_end_time.value;
+        store.fetchSchedulesByUser(userId, start_time.value, end_time.value);
+  } 
+};
+
+const calendarAttributes = computed(() => {
+  return getSchedulesByUser.value.map(schedule => ({
+    key: schedule.id,
+    highlight: true,
+    dates: {
+      start: formatDateToYYYYMMDD(new Date(schedule.start_time)),
+      end: formatDateToYYYYMMDD(new Date(schedule.end_time))
+    },
+    popover: {
+    visibility: 'hover-focus',
+    isInteractive: false,
+     label: `${formatDateToHHMM(new Date(schedule.start_time))} - ${formatDateToHHMM(new Date(schedule.end_time))}`
+
+  },
+  }));
+});
+
 const selectedColor = ref('blue');
 const date = ref(new Date())
-const attrs = ref([
-  {
-    key: 'test',
-    highlight: true,
-    dates: { start: new Date(2019, 3, 15), end: new Date(2019, 3, 19) },
+
+const items = computed(() => {
+  const currentYear = new Date().getFullYear();
+  const startDate = new Date(currentYear, 9, 1);  // January 1st of the current year
+  const endDate = new Date(currentYear, 11, 31);  // December 31st of the current year
+
+  let allDates = [];
+  let currentDate = startDate;
+
+  while (currentDate <= endDate) {
+    allDates.push(formatDateToYYYYMMDD(new Date(currentDate)));
+    currentDate.setDate(currentDate.getDate() + 1);  // Move to the next day
   }
-]);
+
+  return allDates;
+});
+
 
 </script>
