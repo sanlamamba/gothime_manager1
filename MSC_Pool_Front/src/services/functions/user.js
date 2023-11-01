@@ -13,7 +13,7 @@ export function formatUser(userData) {
 }
 export async function createUser(data, callbacks = [], error_callbacks = []) {
   try {
-    const response = await axios.put(Vite_API_URL + "users", data);
+    const response = await axios.post(Vite_API_URL + "users", data);
     callbacks.forEach((callback) => callback(response));
   } catch (error) {
     error_callbacks.forEach((callback) => callback(error));

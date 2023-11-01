@@ -67,6 +67,7 @@
     </v-snackbar>
   </v-card>
 </template>
+
 <script>
   export default {
     data: () => ({
