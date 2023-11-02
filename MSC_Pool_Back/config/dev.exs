@@ -4,7 +4,7 @@ import Config
 config :gothime, TimeManager.Repo,
   username: "postgres",
   password: "admin",
-  hostname: "localhost",
+  hostname: "host.docker.internal",
   database: "gothime_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
