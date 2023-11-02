@@ -1,8 +1,37 @@
 <template>
-  <v-card>
-    <v-container fluid>
+
+    <v-container>
+
+    <v-card>
       <v-row>
-        <v-col cols="12">
+      <v-col>
+      <v-sheet    class="mx-auto px-6 py-8 mx-auto" max-width="344">
+  
+  <v-autocomplete
+v-model="selected_user"
+:items="userItems"
+item-value="id"
+item-title="username"
+label="UserName"
+></v-autocomplete>
+
+<v-btn block rounded="0" @click="filterUser">Select User calendar</v-btn>
+
+  </v-sheet>
+    <VDatePicker
+      v-model="date"
+      mode="date"
+      is24hr
+      :initial-page="{ month: 10, year: 2023 }"
+      :color="selectedColor"
+      :attributes="calendarAttributes"
+      expanded
+      show-weeknumbers
+    ><template #footer>
+      <div class="w-full px-3 pb-3">
+         <v-card class="mx-auto px-6 py-8" max-width="344">
+      <v-row>
+        <v-col cols="12" sm="">
           <div class="d-flex p-4">
             <v-select
               class="p-4"
@@ -21,31 +50,31 @@
           <v-btn @click="filterRange">Filter Range</v-btn>
         </v-col>
       </v-row>
-    </v-container>
-
-    <v-autocomplete
-      v-model="selected_user"
-      :items="userItems"
-      item-value="id"
-      item-title="username"
-      label="UserName"
-    ></v-autocomplete>
-    <v-btn @click="filterUser">Select User calendar</v-btn>
-    <VDatePicker
-      v-model="date"
-      mode="dateTime"
-      is24hr
-      :initial-page="{ month: 10, year: 2023 }"
-      :color="selectedColor"
-      :attributes="calendarAttributes"
-      expanded
-      show-weeknumbers
-    />
+      </v-card>
+      </div>
+    </template>
+  </VDatePicker>
+</v-col>
+<v-divider vertical></v-divider>
+<v-col>
+  <ChartBar/>
+<NewSchedules class="pa-6"/>
+</v-col>
+</v-row>
   </v-card>
+
+   
+    </v-container>
+    
+  
+
+
 </template>
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useSchedulesByUserStore } from "../store/schedulesByUser";
+import NewSchedules from "./NewSchedules.vue";
+import ChartBar from "@/components/ChartBar.vue";
 
 // Format date for the request
 const formatDateToYYYYMMDD = (date) => date.toISOString().slice(0, 10);

@@ -1,5 +1,5 @@
 <template>
-  <VDatePicker v-model="range" mode="dateTime" is-range>
+  <VDatePicker class="ma-12" v-model="range" mode="dateTime" is-range>
     <template #footer>
       <div class="w-full px-4 pb-3">
         <v-btn

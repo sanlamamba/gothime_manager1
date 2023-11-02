@@ -1,7 +1,7 @@
 <template>
   <h1>Mon Calendrier</h1>
   <SchedulesCalendar />
-  <NewSchedules />
+
 </template>
 
 <script setup>
