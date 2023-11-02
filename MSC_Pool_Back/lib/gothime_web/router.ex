@@ -21,6 +21,7 @@ defmodule TimeManagerWeb.Router do
 
     get("/schedules/:user_id", ScheduleController, :get_schedules_by_user_and_date_range)
     get("/schedules/:user_id/:id", ScheduleController, :get_schedule_by_userid_and_id)
+    post("shcedules/:id", ScheduleController, :create)
     resources("/schedules/", ScheduleController, except: [:new, :edit])
   end
 end

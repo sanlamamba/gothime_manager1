@@ -223,7 +223,7 @@ defmodule TimeManager.Time do
             s.end_time <= ^end_datetime
 
     case Repo.all(query) do
-      [] -> {:error, "No schedules found for the specified user and date range"}
+      [] -> {:ok, []}
       schedules -> {:ok, schedules}
     end
   end
