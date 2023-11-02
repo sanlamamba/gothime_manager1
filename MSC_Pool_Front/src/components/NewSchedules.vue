@@ -15,7 +15,7 @@
 
    <script setup>
 import { ref } from "vue";
-
+import { postSchedule } from "@/services/functions/schedules";
 const now = new Date();
 
 // Set the start hour (e.g., 9 AM)
@@ -33,10 +33,10 @@ const range = ref({
 const userId = 8;
 
 function AddSchedule() {
-  console.log(range.value.start);
   const start = range.value.start;
   const end = range.value.end;
 
-  AddSchedule(userId, start, end);
+  return postSchedule(userId, start, end);
 }
+console.log(AddSchedule, "--- Post");
 </script>

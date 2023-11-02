@@ -3,7 +3,7 @@ defmodule TimeManagerWeb.Router do
 
   pipeline :api do
     plug(:accepts, ["json"])
-    plug(CORSPlug, origin: ["http://localhost:3000/", "http://localhost:3000/users"])
+    plug(CORSPlug, origin: ["http://localhost:3000/", "http://localhost:3000/users", "http://localhost:3000/calendar"])
   end
 
   scope "/api", TimeManagerWeb do
@@ -21,7 +21,7 @@ defmodule TimeManagerWeb.Router do
 
     get("/schedules/:user_id", ScheduleController, :get_schedules_by_user_and_date_range)
     get("/schedules/:user_id/:id", ScheduleController, :get_schedule_by_userid_and_id)
-    post("shcedules/:id", ScheduleController, :create)
+    post("shcedules/", ScheduleController, :create )
     resources("/schedules/", ScheduleController, except: [:new, :edit])
   end
 end

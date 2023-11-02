@@ -3,18 +3,20 @@
     <v-container fluid>
       <v-row>
         <v-col cols="12">
-          <div class="d-flex p-2">
-            <v-autocomplete
+          <div class="d-flex p-4">
+            <v-select
+              class="p-4"
               v-model="selected_start_time"
               :items="items"
               label="Start Date"
-            ></v-autocomplete>
+            ></v-select>
 
-            <v-autocomplete
+            <v-select
               v-model="selected_end_time"
+              class="p-4"
               :items="items"
               label="End Date"
-            ></v-autocomplete>
+            ></v-select>
           </div>
           <v-btn @click="filterRange">Filter Range</v-btn>
         </v-col>
