@@ -16,6 +16,6 @@ defmodule TimeManager.Accounts.Team do
     team
     |> cast(attrs, [:name, :description])
     |> validate_required([:name, :description])
-    |> unique_constraint(:name)
+    |> unique_constraint(:name, message: "Ce nom d'équipe est déjà pris.")
   end
 end

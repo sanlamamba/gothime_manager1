@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  msc_pool_front:
+    build:
+      context: ./MSC_Pool_Front
+    ports:
+      - "3000:3000"
+
+  msc_pool_back:
+    build:
+      context: ./MSC_Pool_Back
+    ports:
+      - "4000:4000"
+
+#  service pour la base de données, TO DO .
+  db:
+    image: postgres:latest
+    networks:
+      - app-network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: gothime_dev
+
+networks:
+  app-network:
+    driver: bridge

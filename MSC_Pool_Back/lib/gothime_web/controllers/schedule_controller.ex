@@ -44,8 +44,7 @@ defmodule TimeManagerWeb.ScheduleController do
   # CUSTOM
   def get_schedules_by_user_and_date_range(
         conn,
-        %{"user_id" => user_id, "start_time" => start_time, "end_time" => end_time} = _params
-      ) do
+        %{"user_id" => user_id, "start_time" => start_time, "end_time" => end_time}   ) do
     case Time.get_schedules_by_user_and_date_range(user_id, start_time, end_time) do
       {:ok, schedules} ->
         # nous réutilisons la vue `index`
@@ -55,8 +54,7 @@ defmodule TimeManagerWeb.ScheduleController do
         json(conn, %{error: reason})
     end
   end
-
-  def get_schedule_by_userid_and_id(conn, %{"user_id" => user_id, "id" => id} = _params) do
+  def get_schedule_by_userid_and_id(conn, %{"user_id" => user_id, "id" => id}) do
     case Time.get_schedule_by_userid_and_id(user_id, id) do
       {:ok, schedules} ->
         # nous réutilisons la vue `index`
