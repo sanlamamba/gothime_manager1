@@ -23,7 +23,7 @@ defmodule TimeManager.Seeds do
     %User{
       username: "User #{i}",
       email: "user#{i}@example.com",
-      is_visible: false,
+      is_visible: true,
       team_id: Enum.random(1..team_count)
     }
     |> Repo.insert!()

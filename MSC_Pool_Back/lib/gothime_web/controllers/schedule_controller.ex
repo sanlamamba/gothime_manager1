@@ -54,7 +54,6 @@ defmodule TimeManagerWeb.ScheduleController do
         json(conn, %{error: reason})
     end
   end
-
   def get_schedule_by_userid_and_id(conn, %{"user_id" => user_id, "id" => id}) do
     case Time.get_schedule_by_userid_and_id(user_id, id) do
       {:ok, schedules} ->
@@ -65,4 +64,8 @@ defmodule TimeManagerWeb.ScheduleController do
         json(conn, %{error: reason})
     end
   end
+
+
+
+
 end
