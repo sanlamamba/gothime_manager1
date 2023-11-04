@@ -1,20 +1,31 @@
 <template>
-   <v-container class="bg-surface-variant justify-center">
-  <h1> My Profil</h1>
-  <v-row no-gutters align="center">
-    <v-col
-    cols="2">
-   
-  <UserProfilCard/>
-  <ChartDoughnut/>
-</v-col>
-</v-row>
-
-</v-container>
+  <v-container class="bg-surface-indigo-lighten-5 justify-center">
+    <v-row no-gutters>
+      <v-col class="col-12"> </v-col>
+    </v-row>
+    <v-row no-gutters>
+      <v-col cols="12">
+        <v-row no-gutters>
+          <v-col cols="12" class="pr-5">
+            <UserProfilCard />
+          </v-col>
+        </v-row>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
-<script setup>
-import ChartDoughnut from '@/components/ChartDoughnut.vue';
-import UserProfilCard from '@/components/UserProfilCard.vue';
 
+<script setup>
+import UserProfilCard from "@/components/UserProfilCard.vue";
 </script>
 
+<script>
+export default {
+  data: () => ({}),
+  created() {},
+  computed: {},
+  watch: {},
+
+  methods: {},
+};
+</script>
