@@ -15,6 +15,7 @@ config :gothime,
 # Configures the endpoint
 config :gothime, TimeManagerWeb.Endpoint,
   url: [host: "localhost"],
+
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
     formats: [json: TimeManagerWeb.ErrorJSON],

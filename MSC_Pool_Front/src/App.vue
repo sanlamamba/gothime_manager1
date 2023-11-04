@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app id="inspire" v-if="connected">
     <v-navigation-drawer v-model="drawer">
       <v-list-item title="GoThime Manager" subtitle="Vuetify"></v-list-item>
       <v-divider></v-divider>
@@ -51,6 +51,44 @@
       </v-btn>
     </v-bottom-navigation>
   </v-app>
+  <v-app v-else class="bg-blue">
+    <v-snackbar v-model="snackbar">
+      <v-icon color="white">mdi-alert-circle</v-icon>
+      <span class="white--text">You are not connected</span>
+    </v-snackbar>
+    <v-row align="center" justify="center">
+      <v-col cols="12" sm="8" md="4">
+        <v-card class="px-5 py-5">
+          <v-card-title class="text-h6 text-center pb-5">Login</v-card-title>
+          <v-card-text>
+            <v-form @submit.prevent="login">
+              <v-text-field
+                v-model="auth.email"
+                label="Email"
+                prepend-icon="mdi-email"
+                outlined
+                required
+                :rules="emailRules"
+              ></v-text-field>
+              <v-text-field
+                v-model="auth.password"
+                label="Password"
+                prepend-icon="mdi-lock"
+                outlined
+                required
+                type="password"
+              ></v-text-field>
+              <v-row>
+                <v-col cols="12" sm="6" md="4">
+                  <v-btn color="primary" type="submit" block>Login</v-btn>
+                </v-col>
+              </v-row>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-app>
 </template>
 
 <script setup>
@@ -61,6 +99,28 @@ const drawer = ref(null);
 
 <script>
 export default {
-  data: () => ({ drawer: null }),
+  data: () => ({
+    snackbar: true,
+    drawer: null,
+    connected: false,
+    auth: {
+      email: "",
+      password: "",
+    },
+    emailRules: [
+      (v) => !!v || "Email is required",
+      (v) => /.+@.+\..+/.test(v) || "Email must be valid",
+    ],
+  }),
+  methods: {
+    login() {
+      const formData = {
+        email: this.auth.email,
+        password: this.auth.password,
+      };
+      console.log(formData);
+      this.connected = true;
+    },
+  },
 };
 </script>
