@@ -1,11 +1,11 @@
 import Config
 
 # Configure your database
-config :gothime, TimeManager.Repo,
+config :gothime_app, TimeManagerModule.Repo,
   username: "postgres",
   password: "admin",
-  hostname: "host.docker.internal",
-  database: "gothime_dev",
+  hostname: "localhost",
+  database: "gothime_app_dev",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -16,14 +16,14 @@ config :gothime, TimeManager.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :gothime, TimeManagerWeb.Endpoint,
+config :gothime_app, TimeManagerModuleWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
   check_origin: false,
   code_reloader: true,
   debug_errors: true,
-  secret_key_base: "A6r9G6Sx5Ortvts2V9tjZN4EeOkWtSxXFAoZY26Rb9l+ZdwgUwsQm0huvd+6e96e",
+  secret_key_base: "aT3fQtp9vFOAJIhkZRgeNAfJIsE6Rc5ANaJddN6826lT0rzV1QQlDuh+jGnOHfQm",
   watchers: []
 
 # ## SSL Support
@@ -50,7 +50,7 @@ config :gothime, TimeManagerWeb.Endpoint,
 # different ports.
 
 # Enable dev routes for dashboard and mailbox
-config :gothime, dev_routes: true
+config :gothime_app, dev_routes: true
 
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"

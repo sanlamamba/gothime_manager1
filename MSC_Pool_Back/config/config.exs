@@ -7,22 +7,21 @@
 # General application configuration
 import Config
 
-config :gothime,
-  namespace: TimeManager,
-  ecto_repos: [TimeManager.Repo],
+config :gothime_app,
+  namespace: TimeManagerModule,
+  ecto_repos: [TimeManagerModule.Repo],
   generators: [timestamp_type: :utc_datetime]
 
 # Configures the endpoint
-config :gothime, TimeManagerWeb.Endpoint,
+config :gothime_app, TimeManagerModuleWeb.Endpoint,
   url: [host: "localhost"],
-
   adapter: Phoenix.Endpoint.Cowboy2Adapter,
   render_errors: [
-    formats: [json: TimeManagerWeb.ErrorJSON],
+    formats: [json: TimeManagerModuleWeb.ErrorJSON],
     layout: false
   ],
-  pubsub_server: TimeManager.PubSub,
-  live_view: [signing_salt: "JSrwkni+"]
+  pubsub_server: TimeManagerModule.PubSub,
+  live_view: [signing_salt: "+pTfwwyv"]
 
 # Configures Elixir's Logger
 config :logger, :console,

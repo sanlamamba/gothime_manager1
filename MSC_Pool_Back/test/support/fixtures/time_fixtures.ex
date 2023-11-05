@@ -1,7 +1,7 @@
-defmodule TimeManager.TimeFixtures do
+defmodule TimeManagerModule.TimeFixtures do
   @moduledoc """
   This module defines test helpers for creating
-  entities via the `TimeManager.Time` context.
+  entities via the `TimeManagerModule.Time` context.
   """
 
   @doc """
@@ -12,9 +12,9 @@ defmodule TimeManager.TimeFixtures do
       attrs
       |> Enum.into(%{
         status: true,
-        time: ~N[2023-10-29 13:31:00]
+        time: ~U[2023-11-04 20:14:00Z]
       })
-      |> TimeManager.Time.create_clock()
+      |> TimeManagerModule.Time.create_clock()
 
     clock
   end
@@ -26,10 +26,10 @@ defmodule TimeManager.TimeFixtures do
     {:ok, schedule} =
       attrs
       |> Enum.into(%{
-        end_time: ~N[2023-10-29 13:32:00],
-        start_time: ~N[2023-10-29 13:32:00]
+        end_time: ~U[2023-11-04 20:14:00Z],
+        start_time: ~U[2023-11-04 20:14:00Z]
       })
-      |> TimeManager.Time.create_schedule()
+      |> TimeManagerModule.Time.create_schedule()
 
     schedule
   end
