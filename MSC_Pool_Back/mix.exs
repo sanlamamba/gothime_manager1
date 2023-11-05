@@ -1,9 +1,9 @@
-defmodule TimeManager.MixProject do
+defmodule TimeManagerModule.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :gothime,
+      app: :gothime_app,
       version: "0.1.0",
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -18,7 +18,7 @@ defmodule TimeManager.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {TimeManager.Application, []},
+      mod: {TimeManagerModule.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -41,9 +41,7 @@ defmodule TimeManager.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:plug_cowboy, "~> 2.5"},
-      {:cors_plug, "~> 3.0"},
-
+      {:plug_cowboy, "~> 2.5"}
     ]
   end
 
