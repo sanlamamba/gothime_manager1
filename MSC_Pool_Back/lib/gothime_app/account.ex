@@ -7,6 +7,7 @@ defmodule TimeManagerModule.Account do
   alias TimeManagerModule.Repo
 
   alias TimeManagerModule.Account.Team
+  alias Bcrypt
 
   @doc """
   Returns the list of teams.
@@ -139,16 +140,25 @@ defmodule TimeManagerModule.Account do
 
   ## Examples
 
-   iex > get_acccunt_by_email(example@email.com)
+   iex > authenticate_user_by_mail(example@email.com, plain_password)
   %User{}
 
-  iex > get_account_by_email(nouser@mail.com)
+  iex > authenticate_user_by_mail(nouser@mail.com, plain_password)
   nil
   """
-  def get_user_by_email(email) do
-    User
-    |> where(email: ^email)
-    |> Repo.one()
+  def authenticate_user_by_mail(email, plain_text_password) do
+    query = from u in User, where: u.email == ^email
+    case Repo.one(query) do
+      nil ->
+        Bcrypt.no_user_verify()
+        {:error, :invalid_credentials}
+      user ->
+        if Bcrypt.verify_pass(plain_text_password, user.password_hash) do
+          {:ok, user}
+        else
+          {:error, :invalid_credentials}
+        end
+    end
   end
 
 

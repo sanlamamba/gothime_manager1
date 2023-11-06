@@ -9,7 +9,7 @@ defmodule TimeManagerModule.Account.User do
     field(:email, :string)
     field(:is_visible, :boolean, default: false)
     field(:password_hash, :string)
-    field :password, :string, virtual: true
+
 
     # Each manager user has one team
     has_one(:team, TimeManagerModule.Account.User, foreign_key: :user_id)
@@ -25,8 +25,8 @@ defmodule TimeManagerModule.Account.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :is_visible, :role, :password])
-    |> validate_required([:username, :email, :role, :password])
+    |> cast(attrs, [:username, :email, :is_visible, :role, :password_hash])
+    |> validate_required([:username, :email, :role, :password_hash])
     |> unique_constraint(:email)
     |> unique_constraint(:username)
     |> put_password_hash()
