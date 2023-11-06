@@ -25,21 +25,15 @@ defmodule TimeManagerModule.Account.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:username, :email, :is_visible, :role, :password_hash])
-    |> validate_required([:username, :email, :role, :password_hash])
+    |> cast(attrs, [:username, :email, :is_visible, :role, :password])
+    |> validate_required([:username, :email, :role, :password])
     |> unique_constraint(:email)
     |> unique_constraint(:username)
     |> put_password_hash()
     end
-  defp put_password_hash(changeset) do
-    case changeset do
-      %Ecto.Changeset{valid?: true, changes: %{password: pass}} ->
-        hash = Bcrypt.hash_pwd_salt(pass)
-        put_change(changeset, :password_hash, hash)
 
-      _ ->
-        changeset
+    defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password_hash: password_hash}} = changeset) do
+      change(changeset, password_hash: Bcrypt.hash_pwd_salt(password_hash))
     end
-end
-
+    defp put_password_hash(changeset), do: changeset
 end

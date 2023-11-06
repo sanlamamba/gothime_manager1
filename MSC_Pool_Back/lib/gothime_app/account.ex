@@ -134,6 +134,26 @@ defmodule TimeManagerModule.Account do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets a single user by email
+  return nil if the account does not exist
+
+  ## Examples
+
+   iex > get_acccunt_by_email(example@email.com)
+  %User{}
+
+  iex > get_account_by_email(nouser@mail.com)
+  nil
+  """
+  def get_user_by_email(email) do
+    User
+    |> where(email: ^email)
+    |> Repo.one()
+  end
+
+
+
+  @doc """
   Creates a user.
 
   ## Examples

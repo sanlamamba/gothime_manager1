@@ -32,7 +32,7 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 #Set up Guardian
-config :gothime_app, TimeManager.Guardian,
+config :gothime_app, TimeManagerModule.Auth.Guardian,
        issuer: "gothime_app",
        secret_key: "jXQ6BMh5cFTOMCdCzbDc48zqsBQuWXfthC9vP7+uF63gcwJvcunOcGEXgShVPDwt"
 # Import environment specific config. This must remain at the bottom
