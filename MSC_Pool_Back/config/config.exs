@@ -31,6 +31,10 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+#Set up Guardian
+config :gothime_app, TimeManager.Guardian,
+       issuer: "gothime_app",
+       secret_key: "jXQ6BMh5cFTOMCdCzbDc48zqsBQuWXfthC9vP7+uF63gcwJvcunOcGEXgShVPDwt"
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

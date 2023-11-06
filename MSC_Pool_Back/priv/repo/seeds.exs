@@ -15,12 +15,13 @@ defmodule Seed do
 
   # Seed Users
   defp seed_user(username, email, role) do
+    hashed_password = Bcrypt.hash_pwd_salt("plain_password")
     Repo.insert!(%User{
       username: username,
       email: email,
       is_visible: true,
       role: role,
-      password_hash: "some_hashed_pw"
+      password_hash: hashed_password
     })
   end
 

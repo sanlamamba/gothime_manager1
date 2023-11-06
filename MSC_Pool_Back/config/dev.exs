@@ -3,7 +3,7 @@ import Config
 # Configure your database
 config :gothime_app, TimeManagerModule.Repo,
   username: "postgres",
-  password: "admin",
+  password: "384234",
   hostname: "localhost",
   database: "gothime_app_dev",
   stacktrace: true,

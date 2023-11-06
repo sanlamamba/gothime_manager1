@@ -10,6 +10,8 @@ defmodule TimeManagerModuleWeb.Router do
 
     get("/usersBy", UserController, :showByEmailAndUsername)
     get("/users/all", UserController, :index)
+    post "/users/signup", UserController, :create
+    post "/users/signin", UserController, :signin
     resources("/users", UserController, except: [:new])
 
     resources("/teams/", TeamController)
