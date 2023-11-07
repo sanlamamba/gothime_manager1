@@ -48,4 +48,12 @@ defmodule TimeManagerModuleWeb.UserController do
         json(conn, %{error: reason})
     end
   end
+  def register(conn, %{"user" => user_params}) do
+    with {:ok, user} <-  Account.create_user(user_params) do
+      conn
+      |> put_status(:created)
+      |> text("User Successfully registered with email:" <> " " <> user.email)
+
+    end
+  end
 end

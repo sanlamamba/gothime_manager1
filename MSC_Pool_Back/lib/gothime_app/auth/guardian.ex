@@ -1,4 +1,4 @@
-defmodule TimeManagerModuleWeb.Auth.Guardian do
+defmodule TimeManagerModule.Guardian do
   use Guardian, otp_app: :gothime_app
   alias TimeManagerModule.Account
   alias Bcrypt

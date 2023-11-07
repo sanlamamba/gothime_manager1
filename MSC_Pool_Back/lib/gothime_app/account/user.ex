@@ -32,6 +32,8 @@ defmodule TimeManagerModule.Account.User do
     |> put_password_hash()
     end
 
+
+
     defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password_hash: password_hash}} = changeset) do
       change(changeset, password_hash: Bcrypt.hash_pwd_salt(password_hash))
     end

@@ -1,16 +1,24 @@
 ## lib/auth_me_web/controllers/session_controller.ex
 
-defmodule TimeManagerModuleWeb.Auth.SessionController do
+defmodule TimeManagerModuleWeb.SessionController do
   use TimeManagerModuleWeb, :controller
 
-  alias TimeManagerModuleWeb.{User, Account.User, TimeManagerModule.Guardian}
+  alias TimeManager.Account
+  alias TimeManager.Guardian
 
 
-  def login(conn, %{"user" => %{"email" => email, "password_hash" => password}}) do
-    case UserManager.authenticate_user(email, password) do
+  action_fallback TimeManagerModuleWeb.FallbackController
+
+  def login(conn, %{"user" => %{"email" => email, "password" => password}}) do
+    case TimeManagerModule.Account.authenticate_user(email, password) do
       {:ok, user} ->
-        token = Guardian.Plug.api_sign_in(conn, user)
-        json(conn, %{jwt: token, user: user})
+        {:ok, access_token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {1, :day})
+        {:ok, refresh_token, _claims} = Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
+
+        conn
+        |> put_resp_cookie("ruid", refresh_token, max_age: 7 * 24 * 60 * 60) # max_age in seconds
+        |> put_status(:created)
+        |> json(TimeManagerModuleWeb.SessionJSON.render_token(jwt: access_token))
       {:error, reason} ->
         conn
         |> put_status(:unauthorized)
@@ -18,22 +26,41 @@ defmodule TimeManagerModuleWeb.Auth.SessionController do
     end
   end
 
+
+
+  def refresh(conn, _params) do
+    refresh_token = Plug.Conn.get_req_cookie(conn, "ruid")
+
+    case Guardian.exchange(refresh_token, "refresh", "access") do
+      {:ok, _old_stuff, {new_access_token, _new_claims}} ->
+        conn
+        |> put_status(:created)
+        |> json(TimeManagerModuleWeb.SessionJSON.render_token(jwt: new_access_token))
+      {:error, reason} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: to_string(reason)})
+    end
+  end
+
+
   def logout(conn, _) do
     conn
-    |> Guardian.Plug.sign_out() #This module's full name is Auth.UserManager.Guardian.Plug,
-    |> redirect(to: "/login")   #and the arguments specified in the Guardian.Plug.sign_out()
-  end                           #docs are not applicable here
-
-  defp login_reply({:ok, user}, conn) do
-    conn
-    |> put_flash(:info, "Welcome back!")
-    |> Guardian.Plug.sign_in(user)   #This module's full name is Auth.UserManager.Guardian.Plug,
-    |> redirect(to: "/protected")    #and the arguments specified in the Guardian.Plug.sign_in()
-  end                                #docs are not applicable here.
-
-  defp login_reply({:error, reason}, conn) do
-    conn
-    |> put_flash(:error, to_string(reason))
-    |> new(%{})
+    |> Plug.Conn.delete_resp_cookie("ruid")
+    |> put_status(:ok)
+    |> text("Log out successful.")
   end
-end
+
+#   defp login_reply({:ok, user}, conn) do
+#     conn
+#     |> put_flash(:info, "Welcome back!")
+#     |> Guardian.Plug.sign_in(user)   #This module's full name is Auth.UserManager.Guardian.Plug,
+#     |> redirect(to: "/protected")    #and the arguments specified in the Guardian.Plug.sign_in()
+#   end                                #docs are not applicable here.
+
+#   defp login_reply({:error, reason}, conn) do
+#     conn
+#     |> put_flash(:error, to_string(reason))
+#     |> new(%{})
+#   end
+ end

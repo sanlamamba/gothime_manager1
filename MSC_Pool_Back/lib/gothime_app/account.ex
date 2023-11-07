@@ -134,32 +134,27 @@ defmodule TimeManagerModule.Account do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-  @doc """
-  Gets a single user by email
-  return nil if the account does not exist
-
-  ## Examples
-
-   iex > authenticate_user_by_mail(example@email.com, plain_password)
-  %User{}
-
-  iex > authenticate_user_by_mail(nouser@mail.com, plain_password)
-  nil
-  """
-  def authenticate_user_by_mail(email, plain_text_password) do
-    query = from u in User, where: u.email == ^email
-    case Repo.one(query) do
-      nil ->
-        Bcrypt.no_user_verify()
-        {:error, :invalid_credentials}
-      user ->
-        if Bcrypt.verify_pass(plain_text_password, user.password_hash) do
-          {:ok, user}
-        else
-          {:error, :invalid_credentials}
-        end
-    end
+def get_user_by_email(email) do
+  query = from u in User, where: u.email == ^email
+  case Repo.one(query) do
+    nil -> {:error, :not_found}
+    user -> {:ok, user}
   end
+end
+
+def authenticate_user(email, plain_password) do
+  case get_user_by_email(email) do
+    nil -> {:error, :unauthorized}
+    user -> validate_password(plain_password, user)
+  end
+end
+
+defp validate_password(plain_password, user) do
+  case Bcrypt.verify_pass(plain_password, user.password_hash) do
+    true -> {:ok, user}
+    false -> {:error, :unauthorized}
+  end
+end
 
 
 
