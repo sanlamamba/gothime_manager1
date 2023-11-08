@@ -44,6 +44,7 @@ defmodule TimeManagerModule.MixProject do
       {:plug_cowboy, "~> 2.5"},
       {:guardian, "~> 2.3.2"},
       {:bcrypt_elixir, "~> 3.1.0"}
+      {:cors_plug, "~> 3.0"},
     ]
   end
 
