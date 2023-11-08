@@ -9,12 +9,8 @@ defmodule TimeManagerModuleWeb.SessionController do
 
   def login(conn, %{"user" => %{"email" => email, "password" => password}}) do
     case Guardian.authenticate(email, password) do
-      user ->
-        IO.inspect(user)
-
-      {:ok, user} ->
-        {:ok, access_token, _claims} =
-          Guardian.encode_and_sign(user, %{}, token_type: "access", ttl: {1, :day})
+      {:ok, user, jwt} ->
+        access_token = jwt
 
         {:ok, refresh_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
@@ -23,7 +19,7 @@ defmodule TimeManagerModuleWeb.SessionController do
         # max_age in seconds
         |> put_resp_cookie("ruid", refresh_token, max_age: 7 * 24 * 60 * 60)
         |> put_status(:created)
-        |> json(TimeManagerModuleWeb.SessionJSON.render_token(jwt: access_token))
+        |> render("render_token.json", %{user: user, jwt: access_token})
 
       {:error, reason} ->
         conn
