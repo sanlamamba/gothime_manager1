@@ -1,6 +1,7 @@
 defmodule TimeManagerModule.Account.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Bcrypt
 
   schema "users" do
     field(:username, :string)
@@ -8,6 +9,7 @@ defmodule TimeManagerModule.Account.User do
     field(:email, :string)
     field(:is_visible, :boolean, default: false)
     field(:password_hash, :string)
+
 
     # Each manager user has one team
     has_one(:team, TimeManagerModule.Account.User, foreign_key: :user_id)
@@ -27,5 +29,13 @@ defmodule TimeManagerModule.Account.User do
     |> validate_required([:username, :email, :role, :password_hash])
     |> unique_constraint(:email)
     |> unique_constraint(:username)
-  end
+    |> put_password_hash()
+    end
+
+
+
+    defp put_password_hash(%Ecto.Changeset{valid?: true, changes: %{password_hash: password_hash}} = changeset) do
+      change(changeset, password_hash: Bcrypt.hash_pwd_salt(password_hash))
+    end
+    defp put_password_hash(changeset), do: changeset
 end

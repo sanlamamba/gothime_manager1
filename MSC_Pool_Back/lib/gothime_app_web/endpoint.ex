@@ -41,7 +41,6 @@ defmodule TimeManagerModuleWeb.Endpoint do
   )
 
   plug(CORSPlug)
-
   plug(Plug.MethodOverride)
   plug(Plug.Head)
   plug(Plug.Session, @session_options)
