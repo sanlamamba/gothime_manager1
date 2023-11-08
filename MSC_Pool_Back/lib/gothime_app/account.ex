@@ -134,29 +134,28 @@ defmodule TimeManagerModule.Account do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-def get_user_by_email(email) do
-  query = from u in User, where: u.email == ^email
-  case Repo.one(query) do
-    nil -> {:error, :not_found}
-    user -> {:ok, user}
+  def get_user_by_email(email) do
+    query = from(u in User, where: u.email == ^email)
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
   end
-end
 
-def authenticate_user(email, plain_password) do
-  case get_user_by_email(email) do
-    nil -> {:error, :unauthorized}
-    user -> validate_password(plain_password, user)
-  end
-end
+  # def authenticate_user(email, plain_password) do
+  #   case get_user_by_email(email) do
+  #     nil -> {:error, :unauthorized}
+  #     user -> validate_password(plain_password, user)
+  #   end
+  # end
 
-defp validate_password(plain_password, user) do
-  case Bcrypt.verify_pass(plain_password, user.password_hash) do
-    true -> {:ok, user}
-    false -> {:error, :unauthorized}
-  end
-end
-
-
+  # defp validate_password(plain_password, user) do
+  #   case Bcrypt.verify_pass(plain_password, user.password_hash) do
+  #     true -> {:ok, user}
+  #     false -> {:error, :unauthorized}
+  #   end
+  # end
 
   @doc """
   Creates a user.

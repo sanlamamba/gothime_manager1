@@ -12,14 +12,18 @@ defmodule TimeManagerModule.Guardian do
     sub = to_string(id)
     {:ok, sub}
   end
+
   def subject_for_token(_, _) do
     {:error, :reason_for_error}
   end
 
   def resource_from_claims(%{"sub" => id}) do
     case Account.get_user!(id) do
-      nil -> {:error, :not_found}
-      resource -> {:ok, resource}
+      nil ->
+        {:error, :not_found}
+
+      resource ->
+        {:ok, resource}
     end
   end
 
@@ -29,13 +33,16 @@ defmodule TimeManagerModule.Guardian do
 
   def authenticate(email, password) do
     case Account.get_user_by_email(email) do
-      nil -> {:error, :unauthored}
+      nil ->
+        {:error, :unauthored}
+
       user ->
-        case validate_password(password, user.password_hash) do
+        userMap = elem(user, 1)
+
+        case validate_password(password, userMap.password_hash) do
           true -> create_token(user)
           false -> {:error, :unauthorized}
         end
-
     end
   end
 
@@ -44,7 +51,9 @@ defmodule TimeManagerModule.Guardian do
   end
 
   defp create_token(user) do
-    {:ok, token, _claims} = encode_and_sign(user)
-    {:ok, user, token}
+    userMap = elem(user, 1)
+
+    {:ok, token, _claims} = encode_and_sign(userMap)
+    {:ok, userMap, token}
   end
 end
