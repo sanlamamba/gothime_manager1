@@ -11,7 +11,6 @@ defmodule TimeManagerModuleWeb.SessionController do
     case Guardian.authenticate(email, password) do
       {:ok, user, jwt} ->
         access_token = jwt
-
         {:ok, refresh_token, _claims} =
           Guardian.encode_and_sign(user, %{}, token_type: "refresh", ttl: {7, :day})
 
