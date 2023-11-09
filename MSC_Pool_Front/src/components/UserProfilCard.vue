@@ -2,13 +2,13 @@
   <template v-if="user">
     <v-row>
       <v-col cols="6">
-        <v-select
+        <!-- <v-select
           v-model="selectedIndex"
           label="Select User"
           :items="users"
           item-title="username"
           item-value="id"
-        />
+        /> -->
         <v-card class="mx-auto" max-width="1080">
           <v-toolbar flat color="indigo">
             <v-btn icon="mdi-account"></v-btn>
@@ -41,16 +41,6 @@
           <v-divider />
           <v-card-text>
             <v-text-field disabled v-model="user.role" />
-            <v-select
-              disabled
-              v-model="selectedTeamIds"
-              chips
-              label="User Teams"
-              :items="teams"
-              item-title="name"
-              item-value="id"
-              multiple
-            />
           </v-card-text>
           <v-divider />
           <v-card-actions>
@@ -92,9 +82,11 @@
         </v-row>
       </v-col>
     </v-row>
+    <v-btn @click="click">test</v-btn>
   </template>
 
   <template v-else>
+    <v-btn @click="test"></v-btn>
     <v-skeleton-loader type="card" width="100%" />
   </template>
 </template>
@@ -112,22 +104,18 @@ export default {
     loaded: false,
     hasSaved: false,
     isEditing: null,
-    selectedTeamIds: [1, 5, 3],
+    selectedTeamIds: null,
     selectedIndex: 5,
     clocks: [],
-    user: {
-      id: 1,
-      username: "John Doe",
-      email: "efpyi@example.com",
-      role: "Manager",
-    },
     currentTime: "",
+    memberships: [],
   }),
   props: {},
   created() {
     const store = useUserStore(); // Use the store within the component's context
     store.fetchUsers();
     store.fetchTeams();
+    store.fetchMemberships();
     (async () => {
       this.clocks = await store.fetchClocks(this.selectedIndex);
     })();
@@ -136,6 +124,11 @@ export default {
     selectedIndex(newIndex) {
       this.updateUserFromIndex(newIndex);
       this.loadChart();
+      this.refreshData();
+      console.log(this.memberships);
+      const arrmemberships = [];
+      this.memberships.forEach((m) => arrmemberships.push(m.id));
+      this.selectedTeamIds = arrmemberships;
     },
   },
   computed: {
@@ -153,13 +146,22 @@ export default {
       const store = useUserStore();
       return store.teams;
     },
+    user() {
+      const store = useUserStore();
+      return store.getUserByID(this.selectedIndex);
+    },
   },
   mounted() {
     this.startClock();
     this.loaded = false;
+    const store = useUserStore();
+    // get current User memberships
+    (() => {
+      // const memberships = store.getClock(this.selectedIndex);
+      // console.log(memberships);
+    })();
     try {
       // Effectuez une requête Axios pour obtenir les données de vos horloges depuis l'API
-      const store = useUserStore();
       store.fetchClocks(this.selectedIndex).then((clocks) => {
         const presentClocks = clocks.reduce((acc, c) => {
           if (c.status) return acc + 1;
@@ -192,6 +194,14 @@ export default {
     }
   },
   methods: {
+    refreshData() {
+      const store = useUserStore();
+      this.user = store.getUserByID(this.selectedIndex);
+      // this.memberships = store.getMembershipsByUser(this.selectedIndex);
+    },
+    click() {
+      console.log(this.memberships);
+    },
     startClock() {
       this.updateTime(); // Call it immediately to set the initial time
       setInterval(this.updateTime, 1000); // Update time every second

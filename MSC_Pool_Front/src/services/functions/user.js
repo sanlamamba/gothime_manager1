@@ -1,14 +1,29 @@
 import axios from "axios";
 import { Vite_API_URL } from "../url";
 
-export function formatUser(userData) {
+export const ROLE_ENUM = {
+  manager: "manager",
+  general_manager: "smanager",
+  admin: "admin",
+  user: "user",
+};
+
+export function formatUser(
+  userData,
+  role = "user",
+  is_visible = true,
+  password = true
+) {
   const formData = {
     user: {},
   };
   formData.user.id = userData.id;
   formData.user.username = userData.username;
   formData.user.email = userData.email;
-  formData.user.team_id = userData.team_id;
+  if (password) formData.user.password_hash = userData.password;
+  formData.user.role = role || ROLE_ENUM["user"];
+  formData.user.is_visible = is_visible || true;
+
   return formData;
 }
 export async function createUser(data, callbacks = [], error_callbacks = []) {
