@@ -15,22 +15,21 @@ defmodule Seed do
 
   # Seed Users
   defp seed_user(username, email, role) do
-    hashed_password = Bcrypt.hash_pwd_salt("plain_password")
     Repo.insert!(%User{
       username: username,
       email: email,
       is_visible: true,
       role: role,
-      password_hash: hashed_password
+      password_hash: "some_hashed_pw"
     })
   end
 
   # Seed Teams
-  defp seed_team(name, description) do
+  defp seed_team(name, description, manager_id) do
     Repo.insert!(%Team{
       name: name,
       description: description,
-      user_id: 1
+      user_id: manager_id
     })
   end
 
@@ -44,45 +43,83 @@ defmodule Seed do
 
   # Seed Clocks
   defp seed_clocks(user_id, count) do
-    for _ <- 1..count do
-      Repo.insert!(%Clock{
-        time: rand_datetime(7),
-        status: Enum.random([true, false]),
-        user_id: user_id
-      })
-    end
+    Enum.each(1..count, fn _ ->
+      time = rand_datetime(7)
+      Repo.insert!(%Clock{time: time, status: true, user_id: user_id})
+      # Ensuring clock out is after clock in
+      clock_out_time = DateTime.add(time, Enum.random(300..3600), :second)
+      Repo.insert!(%Clock{time: clock_out_time, status: false, user_id: user_id})
+    end)
   end
 
   # Seed Schedules
-  defp seed_schedules(user_id, count) do
-    for _ <- 1..count do
-      start_time = rand_datetime(30)
-      end_time = DateTime.add(start_time, Enum.random(1..8) * 3_600, :second)
-      Repo.insert!(%Schedule{
-        start_time: start_time,
-        end_time: end_time,
-        user_id: user_id
-      })
-    end
-  end
+  # Seed Schedules
+defp seed_schedules(user_id, count) do
+  Enum.each(1..count, fn _ ->
+    start_time = rand_datetime(30)
+    end_time = DateTime.add(start_time, Enum.random(1..8) * 3_600, :second)
+
+    # Check if end_time is on the same day as start_time; if not, set to end of start_time's day
+    end_of_day_time = %DateTime{
+      year: start_time.year,
+      month: start_time.month,
+      day: start_time.day,
+      hour: 23,
+      minute: 59,
+      second: 59,
+      time_zone: start_time.time_zone,
+      zone_abbr: start_time.zone_abbr,
+      utc_offset: start_time.utc_offset,
+      std_offset: start_time.std_offset,
+    }
+
+    end_time = if DateTime.to_date(start_time) == DateTime.to_date(end_time), do: end_time, else: end_of_day_time
+
+    Repo.insert!(%Schedule{
+      start_time: start_time,
+      end_time: end_time,
+      user_id: user_id
+    })
+  end)
+end
+
 
   def seed do
-    # Creating users
+    # Create an admin and smanager user
     admin_user = seed_user("admin", "admin@example.com", "admin")
+    smanager_user = seed_user("smanager", "smanager@example.com", "smanager")
 
-    # Creating teams
-    dev_team = seed_team("Dev Team", "Development Team")
+    # Create 10 users with role 'manager'
+    managers = Enum.map(1..10, fn i ->
+      seed_user("manager#{i}", "manager#{i}@example.com", "manager")
+    end)
 
-    # Creating memberships
-    seed_membership(admin_user.id, dev_team.id)
+    # Create 10 teams with a manager from the managers list
+    teams = Enum.map(1..10, fn i ->
+      seed_team("Team #{i}", "Description for Team #{i}", Enum.at(managers, i - 1).id)
+    end)
 
-    # Get all users
-    users = Repo.all(User)
+    # Creating 30 memberships randomly assigning users to teams
+    Enum.each(1..30, fn _ ->
+      user = Enum.random(managers)
+      team = Enum.random(teams)
+      seed_membership(user.id, team.id)
+    end)
 
-    # Seed Clocks and Schedules for all users
-    Enum.each(users, fn user ->
-      seed_clocks(user.id, 5) # Replace 5 with desired number of clocks per user
-      seed_schedules(user.id, 5) # Replace 5 with desired number of schedules per user
+    # Create additional users with role 'user' and associate with teams
+    additional_users = Enum.map(11..30, fn i ->
+      seed_user("user#{i}", "user#{i}@example.com", "user")
+    end)
+
+    # Creating 100 schedules randomly among all users
+    all_users = managers ++ additional_users
+    Enum.each(all_users, fn user ->
+      seed_schedules(user.id, 10) # Each user gets 10 schedules
+    end)
+
+    # Creating 300 clocks ensuring there is a clock out for every clock in
+    Enum.each(all_users, fn user ->
+      seed_clocks(user.id, 15) # Each user gets 15 pairs of clocks (30 total clocks)
     end)
   end
 end

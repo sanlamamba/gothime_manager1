@@ -1,16 +1,15 @@
 <template>
   <v-data-table
     :headers="headers"
-    :items="users"
+    :items="teams"
     class="elevation-1 pa-6"
     :sort-by="[{ key: 'id', order: 'desc' }]"
     :sort-desc="sortDesc"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Les Utilisateurs</v-toolbar-title>
+        <v-toolbar-title>The Teams</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
-        <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ props }">
             <v-btn color="primary" dark class="mb-2" v-bind="props">
@@ -29,26 +28,13 @@
               <v-container>
                 <v-row>
                   <v-col cols="12" sm="12" md="12">
-                    <v-text-field
-                      v-model="editedItem.username"
-                      label="User name"
-                    />
+                    <v-text-field v-model="editedItem.name" label="Team Name" />
                   </v-col>
+
                   <v-col cols="12" sm="12" md="12">
                     <v-text-field
-                      v-model="editedItem.email"
-                      label="email"
-                      :rules="emailRules"
-                    />
-                  </v-col>
-                  <v-col cols="12" sm="12" md="12">
-                    <v-select
-                      v-model="editedItem.team_id"
-                      chips
-                      label="User Team"
-                      :items="teams"
-                      item-title="name"
-                      item-value="id"
+                      v-model="editedItem.description"
+                      label="Team Description"
                     />
                   </v-col>
                 </v-row>
@@ -117,6 +103,7 @@ import {
   formatUser,
   deleteUser,
 } from "../services/functions/user.js";
+import { createTeam, deleteTeam, formatTeam } from "@/services/functions/teams";
 // import { Vite_API_URL } from "@/services/url";
 // import { useTeamStore } from "../store/teams.js";
 
@@ -132,27 +119,22 @@ export default {
     dialogDelete: false,
     headers: [
       {
-        title: "Username",
-        align: "start",
-        sortable: false,
-        key: "username",
+        title: "name",
+        key: "name",
       },
-      { title: "Email", key: "email" },
-      { title: "Id", key: "id" },
+      { title: "description", key: "description" },
       { title: "Actions", key: "actions", sortable: false },
     ],
     editedIndex: -1,
     editedItem: {
       id: null,
-      username: "",
-      email: "",
-      team_id: null,
+      name: "",
+      description: "",
     },
     defaultItem: {
       id: null,
-      username: "",
-      email: "",
-      team_id: null,
+      name: "",
+      description: "",
     },
   }),
 
@@ -166,9 +148,7 @@ export default {
       return store.users;
     },
     formTitle() {
-      return this.editedIndex === -1
-        ? "New Item"
-        : `Edit User ${this.editedItem.username}`;
+      return this.editedIndex === -1 ? "New Item" : `Edit Team `;
     },
   },
   watch: {
@@ -197,10 +177,10 @@ export default {
     },
     refreshData() {
       const store = useUserStore();
-      store.fetchUsers();
+      store.fetchTeams();
     },
     editItem(item) {
-      const data = formatUser(item);
+      const data = formatTeam(item);
       this.editedIndex = data.user.id;
       this.editedItem = { ...data.user };
       console.log(this.editedItem);
@@ -215,8 +195,8 @@ export default {
 
     deleteItemConfirm() {
       this.users.splice(this.editedIndex, 1);
-      const formData = formatUser(this.editedItem);
-      deleteUser(formData, [this.refreshData]);
+      const formData = formatTeam(this.editedItem);
+      deleteTeam(formData, [this.refreshData]);
       this.closeDelete();
     },
 
@@ -236,11 +216,11 @@ export default {
     },
     save() {
       if (this.editedIndex > -1) {
-        const formData = formatUser(this.editedItem);
+        const formData = formatTeam(this.editedItem);
         updateUser(formData, [this.refreshData]);
       } else {
-        const formData = formatUser(this.editedItem);
-        createUser(formData, [this.refreshData]);
+        const formData = formatTeam(this.editedItem);
+        createTeam(formData, [this.refreshData]);
       }
       this.close();
     },

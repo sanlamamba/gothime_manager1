@@ -38,6 +38,7 @@ defmodule TimeManagerModuleWeb.Router do
 
     post("/clocks/:user_id", ClockController, :create_with_user)
     get("/clocks", ClockController, :get_clocks_by_userid)
+    get("/clocks/all", ClockController, :index)
 
     get("/schedulesBy/:user_id", ScheduleController, :get_schedules_by_user_and_date_range)
     get("/schedules/:user_id", ScheduleController, :get_schedules_by_user_and_date_range)
