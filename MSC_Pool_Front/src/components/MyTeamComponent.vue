@@ -547,16 +547,16 @@ export default {
     addUserToTeam() {
       console.log(this.selectedTeam);
 
-      // try {
-      //   const formData = formatMembership({
-      //     user_id: this.selectedUser,
-      //     team_id: this.selectedIndex,
-      //   });
-      //   createMembership(formData, [this.refreshData]);
-      //   this.selectedUser = null;
-      // } catch (e) {
-      //   console.error(e);
-      // }
+       try {
+         const formData = formatMembership({
+           user_id: this.selectedUser,
+           team_id: this.selectedIndex,
+         });
+         createMembership(formData, [this.refreshData]);
+         this.selectedUser = null;
+       } catch (e) {
+         console.error(e);
+       }
     },
 
     changeUserRole({ user_id }) {

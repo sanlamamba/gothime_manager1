@@ -20,7 +20,7 @@ defmodule Seed do
       email: email,
       is_visible: true,
       role: role,
-      password_hash: "some_hashed_pw"
+      password_hash: Bcrypt.hash_pwd_salt("pass1234")
     })
   end
 
