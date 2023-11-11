@@ -5,7 +5,7 @@ FROM elixir:1.14
 RUN apt-get update && apt-get install -y wget inotify-tools nodejs npm
 
 # Set working directory as app
-WORKDIR /app
+WORKDIR /MSC_Pool_Back
 
 # Create an app directory to store our files in
 ADD . .
@@ -18,7 +18,7 @@ RUN mix local.hex --force \
   && mix archive.install ./phx_new.ez --force
 
 
-# Install Elixir dependencies
+# Install Elixir dependenciess
 RUN mix deps.get
 
 # Compile files
