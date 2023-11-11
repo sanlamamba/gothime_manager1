@@ -5,7 +5,7 @@ FROM elixir:1.14
 RUN apt-get update && apt-get install -y wget inotify-tools nodejs npm
 
 # Set working directory as app
-WORKDIR /MSC_Pool_Back
+WORKDIR /MSC_Pool_Back/mix.exs
 
 # Create an app directory to store our files in
 ADD . .
