@@ -22,6 +22,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./docker-compose.yml
+          file: ./MSC_Pool_Back/Dockerfile
           push: true
           tags: lamamb/gothime_manager:latest
