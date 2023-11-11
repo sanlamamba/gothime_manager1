@@ -22,6 +22,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker-compose.yml
           push: true
-          tags: yourusername/yourrepo:latest
+          tags: lamamb/gothime_manager:latest
