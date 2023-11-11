@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y wget inotify-tools nodejs npm
 ADD . .
 
 # Set working directory as app
-WORKDIR /app
+WORKDIR /MSC_Pool_Back
 
 
 # Install the Phoenix (phx) archive
