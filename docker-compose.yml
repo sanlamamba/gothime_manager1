@@ -13,7 +13,6 @@ services:
     ports:
       - "4000:4000"
 
-#  service pour la base de données, TO DO .
   db:
     image: postgres:latest
     networks:
